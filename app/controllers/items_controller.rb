@@ -1,4 +1,17 @@
 class ItemsController < ApplicationController
+
+  def add_to_cart
+    id = params[:id].to_i
+    session[:cart] << id 
+    redirect_to items_path
+  end  
+
+  def remove_from_cart
+    id = params[:id].to_i
+    session[:cart].delete(id)
+    redirect_to items_path
+  end
+
   def index
     @items = Item.all
   end
@@ -14,10 +27,14 @@ class ItemsController < ApplicationController
     render json: { status: 'Success', message: 'Item created', item: item }
   end
 
+  def edit
+    @item = Item.find(params[:id])
+  end
+
   def update
-    item = Item.find(params[:id])
-    item.update!(item_params)
-    render json: { status: 'Success', message: 'Item updated', item: item }
+    @item = Item.find(params[:id])
+    @item.update!(item_params)
+    redirect_to items_path
   end
 
   def destroy
@@ -27,8 +44,11 @@ class ItemsController < ApplicationController
   end
 
   def place_order
-   total_price = PlaceOrderService.new(params[:item]).call
-   render json: { status: 'Success', message: 'Item deleted', total_price: total_price }
+    @total_price = PlaceOrderService.new(@cart).call
+  end
+
+  def place_order_with_offer
+   @total_price = PlaceOrderService.new(@cart, true).call
   end
 
   private
