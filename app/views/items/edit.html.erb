@@ -1,0 +1,16 @@
+<div>
+    <h1>Edit page <h1>
+</div>
+
+<%= form_for @item do |item| %>
+	<div>
+		<strong><%= item.label :price %> : </strong>
+		<%= item.text_field :price %>
+	</div>
+	<br>
+	
+	<div>
+		<strong><%= item.submit %></strong>
+	</div>
+	<br>
+<% end -%>
